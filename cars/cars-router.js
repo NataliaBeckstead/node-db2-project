@@ -44,4 +44,36 @@ router.post('/', (req, res) => {
   });
 });
 
+router.put('/:id', (req, res) => { 
+    const changes = req.body;
+    const { id } = req.params;
+    db('cars')
+        .where({ id }) 
+        .update(changes)
+        .then(count => {
+            if (count > 0) {
+                res.status(200).json({ message: "update successful"})
+            } else {
+                res.status(404).json({ message: "no account by that id found" })
+            }
+        })
+});
+
+router.delete('/:id', (req, res) => { 
+    const { id } = req.params;
+    db('cars')
+        .where({ id }) 
+        .del()
+        .then((count) => {
+            if (count > 0) {
+              res.status(200).json({message: "car has been deleted"})
+            } else{
+              res.status(400).json({message: 'cannot find car'})
+            }
+        })
+        .catch((error) => {
+            res.status(500).json({message: "server error"});
+        });
+});
+
 module.exports = router;
